@@ -89,7 +89,7 @@ public final class UdpServer extends Service implements IChannelService,
 	}
 
 	@Override
-	public int readThreshold() {
+	public int throttle() {
 		return 0;
 	}
 
@@ -168,7 +168,7 @@ public final class UdpServer extends Service implements IChannelService,
 	public void onChannelOpened(IChannel channel) {
 		c_logger.debug("{}: OPENED", channel);
 
-		Object key = channel.remoteAddress();
+		final Object key = channel.remoteAddress();
 		final ReadLock readLock = m_lock.readLock();
 		if (!readLock.tryLock()) {
 			channel.close();
@@ -242,7 +242,7 @@ public final class UdpServer extends Service implements IChannelService,
 
 	@Override
 	public void write(ISession session, Object msg) {
-		IChannel channel = m_channels.get(session.remoteAddress());
+		final IChannel channel = m_channels.get(session.remoteAddress());
 		if (channel != null) {
 			channel.write(msg);
 			return;
@@ -274,10 +274,10 @@ public final class UdpServer extends Service implements IChannelService,
 	protected boolean updateInternal(Map<String, ?> properties)
 			throws Exception {
 
-		Configuration newConf = new Configuration();
+		final Configuration newConf = new Configuration();
 		newConf.initialize(properties);
 
-		Configuration oldConf = m_conf;
+		final Configuration oldConf = m_conf;
 		updateConf(newConf);
 
 		return oldConf.isMandatoryChanged(newConf,
@@ -290,19 +290,19 @@ public final class UdpServer extends Service implements IChannelService,
 
 		m_closed = false;
 
-		Configuration conf = m_conf;
+		final Configuration conf = m_conf;
 		InetAddress bindAddr = null;
-		String host = conf.bindAddr();
+		final String host = conf.bindAddr();
 		if (host != null)
 			bindAddr = InetAddress.getByName(host);
 
 		m_channels = new ConcurrentHashMap<Object, IChannel>(
 				conf.initCapacityOfChannelMap());
 
-		SocketAddress localAddr = null;
-		DatagramChannel datagramChannel = DatagramChannel.open();
+		final SocketAddress localAddr;
+		final DatagramChannel datagramChannel = DatagramChannel.open();
 		try {
-			DatagramSocket socket = datagramChannel.socket();
+			final DatagramSocket socket = datagramChannel.socket();
 			initSocket(socket, conf);
 			localAddr = new InetSocketAddress(bindAddr, conf.port());
 			socket.bind(localAddr);
@@ -344,7 +344,7 @@ public final class UdpServer extends Service implements IChannelService,
 			writeLock.unlock();
 		}
 
-		Collection<IChannel> channels = m_channels.values();
+		final Collection<IChannel> channels = m_channels.values();
 		for (IChannel channel : channels)
 			channel.close();
 
@@ -412,7 +412,7 @@ public final class UdpServer extends Service implements IChannelService,
 		String[] newNames = newConf == null ? StrUtil.getEmptyStringArray()
 				: newConf.filters();
 		String[] oldNames = StrUtil.getEmptyStringArray();
-		IFilterManager fm = m_fm;
+		final IFilterManager fm = m_fm;
 		if (m_conf == null)
 			m_filters = fm.getFilters(oldNames);
 		else
