@@ -55,6 +55,11 @@ public final class MeConstants {
          */
         public static final String EXCEP_UNKNOWN = "jruyi.me.exception.unknown";
         
+        /**
+         * Property name of Route Not Found error.
+         */
+        public static final String ROUTE_NOT_FOUND = "jruyi.me.exception.routenotfound";
+        
 	private MeConstants() {
 	}
 }

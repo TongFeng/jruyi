@@ -68,11 +68,12 @@ abstract class Endpoint implements IProducer, IConsumer, IDumpable {
 				if (msg.to() == null) {
 					IRoute entry = endpoint.router().route(msg);
 					if (entry == null) {
-						c_logger.warn(StrUtil.join("Route Not Found:", msg));
-						msg.close();
-						return;
-					}
-					msg.to(entry.to());
+						c_logger.error(StrUtil.join("Route Not Found:", msg));
+                                                msg.putProperty(MeConstants.ROUTE_NOT_FOUND, "Route Not Found");
+                                                msg.to((String) msg.getProperty(MeConstants.HID_EXCEPTION));
+					} else {
+                                                msg.to(entry.to());
+                                        }
 				}
 
 				endpoint.mq().dispatch(msg);
