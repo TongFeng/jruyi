@@ -135,7 +135,9 @@ public final class TcpServer extends Service implements IChannelService,
 	@Override
 	public void onChannelException(IChannel channel, Throwable t) {
 		try {
-			c_logger.error(StrUtil.join(channel, " got an error"), t);
+			c_logger.error(StrUtil.join(channel, " Remote Addr:", 
+                                ((InetSocketAddress)channel.remoteAddress()).toString(), 
+                                "got an error"), t);
 
 			final ISessionListener listener = m_listener;
 			if (listener != null)
