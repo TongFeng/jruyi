@@ -205,8 +205,12 @@ public final class ConnPool extends AbstractTcpClient implements IRunnable {
 		}
 
 		msg = poolChannelIfNoMsg(channel);
-		if (msg != null)
-			writeInternal(channel, msg);
+		if (msg != null) {
+			if (!channel.isClosed())
+				writeInternal(channel, msg);
+			else
+				write(null, msg);
+		}
 	}
 
 	@Override
@@ -334,7 +338,10 @@ public final class ConnPool extends AbstractTcpClient implements IRunnable {
 	@Override
 	public void run(IArgList args) {
 		final IChannel channel = (IChannel) args.arg(0);
-		writeInternal(channel, args.arg(1));
+		if (!channel.isClosed())
+			writeInternal(channel, args.arg(1));
+		else
+			write(null, args.arg(1));
 	}
 
 	protected synchronized void bindWorkshop(IWorkshop workshop) {
@@ -443,6 +450,9 @@ public final class ConnPool extends AbstractTcpClient implements IRunnable {
 		if (msg != null)
 			return msg;
 
+                if (channel.isClosed())
+			return null;
+                
 		final Configuration conf = m_conf;
 		final int keepAliveTime = conf.idleTimeoutInSeconds();
 		final ReentrantLock lock = m_channelQueueLock;
