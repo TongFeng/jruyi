@@ -143,13 +143,13 @@ abstract class Endpoint implements IProducer, IConsumer, IDumpable {
 		}
 
 		message.to(null);
-		try {
+//		try {
 			getConsumer().onMessage(message);
-		} catch (Throwable t) {
-			c_logger.error(
-					StrUtil.join(this, " failed to consume message: ", message),
-					t);
-		}
+//		} catch (Throwable t) {
+//			c_logger.error(
+//					StrUtil.join(this, " failed to consume message: ", message),
+//					t);
+//		}
 	}
 
 	IConsumer getConsumer() {

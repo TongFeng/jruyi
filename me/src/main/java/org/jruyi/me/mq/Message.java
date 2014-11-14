@@ -29,6 +29,7 @@ import org.jruyi.common.StringBuilder;
 import org.jruyi.common.ThreadLocalCache;
 import org.jruyi.me.IMessage;
 import org.jruyi.me.route.IRoutable;
+import org.jruyi.me.MeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +87,14 @@ public final class Message implements Runnable, IMessage, IRoutable,
 	public void run() {
 		Endpoint mqProxy = m_endpoint;
 		m_endpoint = null;
-		mqProxy.consume(this);
+		try {
+                    mqProxy.consume(this);
+                } catch (Throwable t) {
+                    c_logger.error("Unexpected Error: ", t);
+                    putProperty(MeConstants.EXCEP_UNKNOWN, t);
+                    to((String) getProperty(MeConstants.HID_EXCEPTION));
+                    mqProxy.send(this);
+                }
 	}
 
 	@Override

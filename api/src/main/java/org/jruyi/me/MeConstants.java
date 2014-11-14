@@ -45,6 +45,16 @@ public final class MeConstants {
 	 */
 	public static final String HID_MSGLOG = "jruyi.me.msglog.handler";
 
+        /**
+         * The handler ID of exception handler.
+         */
+        public static final String HID_EXCEPTION = "jruyi.me.exception.handler";
+        
+        /**
+         * Property name of unknown exception.
+         */
+        public static final String EXCEP_UNKNOWN = "jruyi.me.exception.unknown";
+        
 	private MeConstants() {
 	}
 }
